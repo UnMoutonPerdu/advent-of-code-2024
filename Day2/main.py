@@ -37,34 +37,28 @@ def part_1(entries: list[str]):
     return num_safe
 
 def is_safe2(levels: list[int]):
-    right_to_error = True
-    if levels[0] != levels[1]:
-        increasing = True if levels[0] < levels[1] else False
-        start = 0
-    else if levels[1] != levels[2]:
-        increasing = True if levels[1] < levels[2] else False
-        start = 1
-        right_to_error = False 
-    else:
-        return False 
-
-    while start < (len(levels)-1):
+    if is_safe(levels[1:]):
+        return True
+    increasing = True if levels[0] < levels[1] else False
+    for i in range(len(levels)-1):
         if levels[i] == levels[i+1]:
-            
-            return False
+            return is_safe(levels[:i] + levels[i+1:])
         if not (increasing ^ (levels[i] < levels[i+1])):
             if abs(levels[i] - levels[i+1]) > 3:
-                return False 
+                return True if is_safe(levels[:i] + levels[i+1:]) + is_safe(levels[:i+1] + levels[i+2:]) > 0 else False      
         else:
-            return False 
-
+            return True if is_safe(levels[:i] + levels[i+1:]) + is_safe(levels[:i+1] + levels[i+2:]) > 0 else False      
     return True
 
 def part_2(entries: list[str]):
-    
+    num_safe = 0
+    for entry in entries:
+        levels = list(map(int, entry.split()))
+        num_safe += is_safe2(levels)
+
+    return num_safe
 
 
-    return 0
 
 if __name__ == '__main__':
     main()
